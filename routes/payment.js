@@ -11,7 +11,7 @@ router.post("/vnpay-payment", (req, res, next) => {
   let date = new Date();
   let createDate = moment(date).format("YYYYMMDDHHmmss");
 
-  const { total_price, order_id } = req.body;
+  const { total_price } = req.body;
   let ipAddr =
     req.headers["x-forwarded-for"] ||
     req.connection.remoteAddress ||
@@ -25,8 +25,9 @@ router.post("/vnpay-payment", (req, res, next) => {
   vnp_Params["vnp_TmnCode"] = process.env.VNP_TMN_CODE;
   vnp_Params["vnp_Locale"] = "vn";
   vnp_Params["vnp_CurrCode"] = "VND";
-  vnp_Params["vnp_TxnRef"] = order_id;
-  vnp_Params["vnp_OrderInfo"] = `Thanh toan don hang #${order_id}`;
+  const vnp_TxnRef = moment(new Date()).format("DDHHmmss");
+  vnp_Params["vnp_TxnRef"] = vnp_TxnRef;
+  vnp_Params["vnp_OrderInfo"] = `Thanh toan don hang #${vnp_TxnRef}`;
   vnp_Params["vnp_OrderType"] = "other";
   vnp_Params["vnp_Amount"] = total_price * 100;
   vnp_Params["vnp_ReturnUrl"] = process.env.VNP_RETURN_URL;
